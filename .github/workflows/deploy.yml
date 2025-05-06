@@ -10,8 +10,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Build Docker image
-        run: docker build -t hospital-app .
+      - name: Build Docker image and tag as latest
+        run: |
+          docker build -t hospital-app .
+          docker tag hospital-app hospital-app:latest
         working-directory: ${{ github.workspace }} # Add this line
 
   push:
@@ -20,8 +22,6 @@ jobs:
     steps:
       - name: Login to Docker Hub
         run: docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_PASSWORD }}"
-      - name: Tag Docker image with latest
-        run: docker tag hospital-app hospital-app:latest
       - name: Tag Docker image for Docker Hub
         run: docker tag hospital-app:latest ${{ secrets.DOCKERHUB_USERNAME }}/hospital-app:latest
       - name: Push Docker image to Docker Hub
