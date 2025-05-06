@@ -15,7 +15,7 @@ with open('config.json') as data_file:
 
 app = Flask(__name__, static_url_path='')
 api = Api(app)
-
+#hello
 api.add_resource(Patients, '/patient')
 api.add_resource(Patient, '/patient/<int:id>')
 api.add_resource(Doctors, '/doctor')
