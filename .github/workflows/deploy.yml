@@ -16,17 +16,20 @@ jobs:
         working-directory: ${{ github.workspace }} # Add this line
 
   push:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Login to Docker Hub
-        run: docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_PASSWORD }}"
+  needs: build
+  runs-on: ubuntu-latest
+  steps:
+    - name: Login to Docker Hub
+      run: docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_PASSWORD }}"
 
-      - name: Tag Docker image
-        run: docker tag hospital-app ${{ secrets.DOCKERHUB_USERNAME }}/hospital-app:latest
+    - name: Tag Docker image with latest
+      run: docker tag hospital-app hospital-app:latest
 
-      - name: Push Docker image
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/hospital-app:latest
+    - name: Tag Docker image for Docker Hub
+      run: docker tag hospital-app:latest ${{ secrets.DOCKERHUB_USERNAME }}/hospital-app:latest
+
+    - name: Push Docker image to Docker Hub
+      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/hospital-app:latest
 
   deploy:
     needs: push
