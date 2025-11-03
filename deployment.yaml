@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ehealth-app
+  labels:
+    app: ehealth
+spec:
+  replicas: 2  # Number of pods you want to run
+  selector:
+    matchLabels:
+      app: ehealth
+  template:
+    metadata:
+      labels:
+        app: ehealth
+    spec:
+      containers:
+        - name: ehealth-container
+          image: your-dockerhub-username/ehealth-app:latest  # <-- change this
+          ports:
+            - containerPort: 80
+          env:
+            - name: ENV
+              value: "production"
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ehealth-service
+spec:
+  selector:
+    app: ehealth
+  ports:
+    - protocol: TCP
+      port: 80       # Service port
+      targetPort: 80 # Container port
+  type: LoadBalancer
